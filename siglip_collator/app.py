@@ -169,6 +169,7 @@ if image:
     )
 else:
     # No image loaded
+    clear_results()
     st.write("Load an image first")
 
 st.session_state[SESS_KEY_LAST_SOURCE] = sel

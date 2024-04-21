@@ -16,4 +16,5 @@ dependencies = [
     "transformers",
     "streamlit",
     "sentencepiece",
+    "watchdog",
 ]
