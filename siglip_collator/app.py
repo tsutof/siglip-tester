@@ -28,7 +28,7 @@ import requests
 import io
 import pandas as pd
 import random
-import siglip_collator.model as model
+from siglip_collator import *
 
 
 SRC_SEL_NET = "Network :globe_with_meridians:"
@@ -42,7 +42,7 @@ SESS_KEY_LAST_SOURCE = "last_source"
 
 @st.cache_resource
 def get_model():
-    model = model.SiglipModel()
+    model = SiglipModel()
     return model
 
 
@@ -133,7 +133,7 @@ if sel != st.session_state[SESS_KEY_LAST_SOURCE]:
 
 if sel == SRC_SEL_NET:
     # Download an image from internet
-    url = st.text_input('The URL Link')
+    url = st.text_input('Image URL Link')
     if url:
         image = io.BytesIO(requests.get(url).content)
         if image:
