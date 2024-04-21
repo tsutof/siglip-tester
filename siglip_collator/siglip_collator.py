@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 import streamlit as st
 from PIL import Image
 import numpy as np
@@ -27,20 +28,36 @@ import requests
 import io
 import pandas as pd
 import random
-import siglip_model
+import siglip_collator.siglip_model as siglip_model
 
 
 SRC_SEL_NET = "Network :globe_with_meridians:"
 SRC_SEL_FILE = "Local File :open_file_folder:"
 SRC_SEL_CAM = "Camera :camera:"
+SRC_SEL_NONE = "No image source selection"
 SESS_KEY_DF = "dataframe"
 SESS_KEY_INPUT_KEY = "target_text_key"
+SESS_KEY_LAST_SOURCE = "last_source"
 
 
 @st.cache_resource
 def get_model():
     model = siglip_model.SiglipModel()
     return model
+
+
+def initialize_session_data():
+    # Initialize the dataframe to hold the results                  
+    if SESS_KEY_DF not in st.session_state:
+        clear_results()
+
+    # Initialize the texe input key
+    if SESS_KEY_INPUT_KEY not in st.session_state:
+        st.session_state[SESS_KEY_INPUT_KEY] = random.randint(0, 100000)
+
+    # Initialize the session state for the last input source selection
+    if SESS_KEY_LAST_SOURCE not in st.session_state:
+        st.session_state[SESS_KEY_LAST_SOURCE] = SRC_SEL_NONE
 
 
 def clear_results():
@@ -90,13 +107,8 @@ image = None
 # Load the SigLIP model
 model = get_model()
 
-# Initialize the dataframe to hold the results                  
-if SESS_KEY_DF not in st.session_state:
-    clear_results()
-
-# Initialize the texe input key
-if SESS_KEY_INPUT_KEY not in st.session_state:
-    st.session_state[SESS_KEY_INPUT_KEY] = random.randint(0, 100000)
+# Initialize the session data
+initialize_session_data()
 
 # Sidebar for the image source selection
 with st.sidebar:
@@ -115,6 +127,9 @@ with st.sidebar:
     )
 
 st.title("SigLIP Collator Application")
+
+if sel != st.session_state[SESS_KEY_LAST_SOURCE]:
+    clear_results()
 
 if sel == SRC_SEL_NET:
     # Download an image from internet
@@ -155,3 +170,5 @@ if image:
 else:
     # No image loaded
     st.write("Load an image first")
+
+st.session_state[SESS_KEY_LAST_SOURCE] = sel
