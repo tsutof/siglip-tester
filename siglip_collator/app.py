@@ -28,7 +28,7 @@ import requests
 import io
 import pandas as pd
 import random
-import siglip_collator.siglip_model as siglip_model
+import siglip_collator.model as model
 
 
 SRC_SEL_NET = "Network :globe_with_meridians:"
@@ -42,7 +42,7 @@ SESS_KEY_LAST_SOURCE = "last_source"
 
 @st.cache_resource
 def get_model():
-    model = siglip_model.SiglipModel()
+    model = model.SiglipModel()
     return model
 
 
