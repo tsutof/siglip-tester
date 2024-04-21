@@ -133,19 +133,29 @@ if sel != st.session_state[SESS_KEY_LAST_SOURCE]:
 
 if sel == SRC_SEL_NET:
     # Download an image from internet
-    url = st.text_input('Image URL Link')
+    url = st.text_input(
+        "Image URL Link", 
+        on_change=clear_results
+    )
     if url:
         image = io.BytesIO(requests.get(url).content)
         if image:
             st.image(image)
 elif sel == SRC_SEL_FILE:
     # Load an image from the local drive
-    image = st.file_uploader("Choose an Image File", type=["png", "jpg"])
+    image = st.file_uploader(
+        "Choose an Image File", 
+        type=["png", "jpg"],
+        on_change=clear_results
+    )
     if image:
         st.image(image)
 elif sel == SRC_SEL_CAM:
     # Capture an image from the computer camera
-    image = st.camera_input("Take a Picture")
+    image = st.camera_input(
+        "Take a Picture",
+        on_change=clear_results
+    )
 
 if image:
     # Convert the image into the PIL format
@@ -169,7 +179,6 @@ if image:
     )
 else:
     # No image loaded
-    clear_results()
     st.write("Load an image first")
 
 st.session_state[SESS_KEY_LAST_SOURCE] = sel
