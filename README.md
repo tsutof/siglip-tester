@@ -1,6 +1,8 @@
 # siglip_tester
 Image - Sentence Correlation Tester Application with the SigLIP Model
 
+![Screenshot](./screenshot.png)
+
 ## Installation
 
 ```
