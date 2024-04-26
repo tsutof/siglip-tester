@@ -1,1 +1,0 @@
-from siglip_collator.model import *

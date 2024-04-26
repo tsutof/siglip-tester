@@ -23,16 +23,12 @@
 
 import streamlit as st
 from PIL import Image
-import numpy as np
-import requests
-import io
 import pandas as pd
 import random
 import pathlib
 import urllib.request
 import os
-import uuid
-from siglip_collator import *
+from siglip_tester import *
 
 
 SRC_SEL_NET = "Network :globe_with_meridians:"
@@ -75,9 +71,10 @@ def initialize_session_data():
 def clear_results():
     df = pd.DataFrame(columns=["Target Text", "Logit", "Probability"])
     st.session_state[SESS_KEY_DF] = df
+    st.session_state[SESS_KEY_IMG_FILE] = None
 
 
-def download_image(url):
+def download_file(url):
     file_name = IMG_FILE_BASE
     ext = pathlib.Path(url).suffix
     file_name += ext
@@ -85,7 +82,9 @@ def download_image(url):
     try:
         if not os.path.isdir(TMP_PATH):
             os.makedirs(TMP_PATH)
-        urllib.request.urlretrieve(url, file_path)
+        data = urllib.request.urlopen(url).read()
+        with open(file_path, mode="wb") as f:
+            f.write(data)
     except Exception:
         file_path = None
     return file_path
@@ -93,9 +92,9 @@ def download_image(url):
 
 def on_url_text_input_changed():
     url = st.session_state[URL_WIDGET_KEY]
-    file_path = download_image(url)
+    file_path = download_file(url)
     if file_path is None:
-        st.write("Could not download the image")
+        st.markdown("*Could not download the image form {}*".format(url))
     st.session_state[SESS_KEY_IMG_FILE] = file_path
     clear_results()
 
@@ -161,7 +160,7 @@ with st.sidebar:
         ]
     )
 
-st.title("SigLIP Collator Application")
+st.title("SigLIP Tester")
 
 if sel != st.session_state[SESS_KEY_LAST_SOURCE]:
     clear_results()
