@@ -1,5 +1,5 @@
-# siglip_collator
-Image - Sentence Collator Application with the SigLIP Model
+# siglip_tester
+Image - Sentence Tester Application with the SigLIP Model
 
 ## Installation
 
@@ -9,7 +9,7 @@ conda activate siglip
 ```
 
 ```
-git clone https://github.com/tsutof/siglip-collator && \
+git clone https://github.com/tsutof/siglip-tester && \
 cd siglip-collator && \
 pip install -e .
 ```
@@ -17,5 +17,5 @@ pip install -e .
 ## Run
 
 ```
-streamlit run siglip_collator/app.py
+streamlit run siglip-tester/app.py
 ```

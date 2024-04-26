@@ -69,8 +69,11 @@ def initialize_session_data():
 
 
 def clear_results():
-    df = pd.DataFrame(columns=["Target Text", "Logit", "Probability"])
+    df = pd.DataFrame(columns=["Text", "Logit", "Probability"])
     st.session_state[SESS_KEY_DF] = df
+
+
+def clear_image():
     st.session_state[SESS_KEY_IMG_FILE] = None
 
 
@@ -121,7 +124,7 @@ def update(model, image):
     prob_list = probs.data[0].tolist()
     df2 = pd.DataFrame(
         {
-            "Target Text": text_list,
+            "Text": text_list,
             "Logit": logit_list,
             "Probability": prob_list
         },
@@ -135,6 +138,10 @@ def update(model, image):
     # Regenerate the text input key to clear the last input
     st.session_state[SESS_KEY_TGT_INPUT_KEY] = random.randint(0, 100000)
 
+
+#
+# Streamlit application main routine
+#
 
 image = None
 
@@ -163,6 +170,7 @@ with st.sidebar:
 st.title("SigLIP Tester")
 
 if sel != st.session_state[SESS_KEY_LAST_SOURCE]:
+    clear_image()
     clear_results()
 
 if sel == SRC_SEL_NET:
@@ -170,7 +178,8 @@ if sel == SRC_SEL_NET:
     st.text_input(
         "Image URL Link", 
         key=URL_WIDGET_KEY,
-        on_change=on_url_text_input_changed
+        on_change=on_url_text_input_changed,
+        placeholder="Input an URL link of an Image File"
     )
     image = st.session_state[SESS_KEY_IMG_FILE]
     if image:
@@ -197,10 +206,11 @@ if image:
 
     # Text input widget to specify a target text
     st.text_input(
-        "Target Text", 
+        "Text", 
         key=str(st.session_state[SESS_KEY_TGT_INPUT_KEY]),
         on_change=update,
-        args=(model, image)
+        args=(model, image),
+        placeholder="Input a text to test on the image"
     )
 
     # Button widget to clear the results
