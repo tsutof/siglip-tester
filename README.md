@@ -1,5 +1,5 @@
 # siglip_tester
-Image - Sentence Tester Application with the SigLIP Model
+Image - Sentence Correlation Tester Application with the SigLIP Model
 
 ## Installation
 
