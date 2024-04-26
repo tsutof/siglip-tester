@@ -28,6 +28,10 @@ import requests
 import io
 import pandas as pd
 import random
+import pathlib
+import urllib.request
+import os
+import uuid
 from siglip_collator import *
 
 
@@ -35,9 +39,13 @@ SRC_SEL_NET = "Network :globe_with_meridians:"
 SRC_SEL_FILE = "Local File :open_file_folder:"
 SRC_SEL_CAM = "Camera :camera:"
 SRC_SEL_NONE = "No image source selection"
+IMG_FILE_BASE = "DOWNLOADED_IMAGE"
+TMP_PATH = ".temporary"
 SESS_KEY_DF = "dataframe"
-SESS_KEY_INPUT_KEY = "target_text_key"
+SESS_KEY_TGT_INPUT_KEY = "target_text_key"
 SESS_KEY_LAST_SOURCE = "last_source"
+SESS_KEY_IMG_FILE = "image_file"
+URL_WIDGET_KEY = "url_text_input"
 
 
 @st.cache_resource
@@ -52,17 +60,44 @@ def initialize_session_data():
         clear_results()
 
     # Initialize the texe input key
-    if SESS_KEY_INPUT_KEY not in st.session_state:
-        st.session_state[SESS_KEY_INPUT_KEY] = random.randint(0, 100000)
+    if SESS_KEY_TGT_INPUT_KEY not in st.session_state:
+        st.session_state[SESS_KEY_TGT_INPUT_KEY] = random.randint(0, 100000)
 
     # Initialize the session state for the last input source selection
     if SESS_KEY_LAST_SOURCE not in st.session_state:
         st.session_state[SESS_KEY_LAST_SOURCE] = SRC_SEL_NONE
 
+    # Initialize the session state for the last image URL
+    if SESS_KEY_IMG_FILE not in st.session_state:
+        st.session_state[SESS_KEY_IMG_FILE] = None
+
 
 def clear_results():
     df = pd.DataFrame(columns=["Target Text", "Logit", "Probability"])
     st.session_state[SESS_KEY_DF] = df
+
+
+def download_image(url):
+    file_name = IMG_FILE_BASE
+    ext = pathlib.Path(url).suffix
+    file_name += ext
+    file_path = os.path.join(TMP_PATH, file_name)
+    try:
+        if not os.path.isdir(TMP_PATH):
+            os.makedirs(TMP_PATH)
+        urllib.request.urlretrieve(url, file_path)
+    except Exception:
+        file_path = None
+    return file_path
+
+
+def on_url_text_input_changed():
+    url = st.session_state[URL_WIDGET_KEY]
+    file_path = download_image(url)
+    if file_path is None:
+        st.write("Could not download the image")
+    st.session_state[SESS_KEY_IMG_FILE] = file_path
+    clear_results()
 
 
 # Callback when the new target text input
@@ -71,7 +106,7 @@ def update(model, image):
         return
     
     # Get the last input target text
-    key=str(st.session_state[SESS_KEY_INPUT_KEY])
+    key=str(st.session_state[SESS_KEY_TGT_INPUT_KEY])
     target_text = st.session_state[key]
     text_list = [target_text]
     
@@ -99,7 +134,7 @@ def update(model, image):
     st.session_state[SESS_KEY_DF] = df
 
     # Regenerate the text input key to clear the last input
-    st.session_state[SESS_KEY_INPUT_KEY] = random.randint(0, 100000)
+    st.session_state[SESS_KEY_TGT_INPUT_KEY] = random.randint(0, 100000)
 
 
 image = None
@@ -133,14 +168,14 @@ if sel != st.session_state[SESS_KEY_LAST_SOURCE]:
 
 if sel == SRC_SEL_NET:
     # Download an image from internet
-    url = st.text_input(
+    st.text_input(
         "Image URL Link", 
-        on_change=clear_results
+        key=URL_WIDGET_KEY,
+        on_change=on_url_text_input_changed
     )
-    if url:
-        image = io.BytesIO(requests.get(url).content)
-        if image:
-            st.image(image)
+    image = st.session_state[SESS_KEY_IMG_FILE]
+    if image:
+        st.image(image)
 elif sel == SRC_SEL_FILE:
     # Load an image from the local drive
     image = st.file_uploader(
@@ -164,7 +199,7 @@ if image:
     # Text input widget to specify a target text
     st.text_input(
         "Target Text", 
-        key=str(st.session_state[SESS_KEY_INPUT_KEY]),
+        key=str(st.session_state[SESS_KEY_TGT_INPUT_KEY]),
         on_change=update,
         args=(model, image)
     )
