@@ -154,7 +154,7 @@ initialize_session_data()
 # Sidebar for the image source selection
 with st.sidebar:
     sel = st.radio(
-        label="Select Image Source",
+        label="Image Source",
         options=[
             SRC_SEL_NET, 
             SRC_SEL_FILE, 

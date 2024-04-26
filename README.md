@@ -1,5 +1,10 @@
 # siglip_tester
-Image - Sentence Correlation Tester Application with the SigLIP Model
+Image - Sentence Correlation Tester Application with [the SigLIP Model](https://huggingface.co/docs/transformers/model_doc/siglip)  
+
+Image source options
+- Online
+- Local file
+- Comupter camera
 
 ![Screenshot](./screenshot.png)
 
@@ -21,3 +26,8 @@ pip install -e .
 ```
 streamlit run siglip_tester/app.py
 ```
+
+## Usage
+
+1. Choose a image source from the options at the sidebar.
+1. Input a text to match with the image. The text will be added to the data frame with the probability calculated by the SigLIP model.
