@@ -17,5 +17,5 @@ pip install -e .
 ## Run
 
 ```
-streamlit run siglip-tester/app.py
+streamlit run siglip_tester/app.py
 ```
