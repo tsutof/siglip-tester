@@ -2,7 +2,7 @@
 Image - Sentence Correlation Tester Application with [the SigLIP Model](https://huggingface.co/docs/transformers/model_doc/siglip)  
 
 Image source options
-- Online
+- Network
 - Local file
 - Comupter camera
 
