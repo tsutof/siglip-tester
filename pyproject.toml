@@ -3,8 +3,8 @@ requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "siglip-collator"
-description = "Image - Sentence Collator Application with the SigLIP Model"
+name = "siglip-tester"
+description = "Image - Text Correlation Tester Application with the SigLIP Model"
 readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = [

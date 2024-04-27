@@ -1,5 +1,5 @@
 # siglip_tester
-Image - Sentence Correlation Tester Application with [the SigLIP Model](https://huggingface.co/docs/transformers/model_doc/siglip)  
+Image - Text Correlation Tester Application with [the SigLIP Model](https://huggingface.co/docs/transformers/model_doc/siglip)  
 
 Image source options
 - Network
@@ -17,7 +17,7 @@ conda activate siglip
 
 ```
 git clone https://github.com/tsutof/siglip-tester && \
-cd siglip-collator && \
+cd siglip-tester && \
 pip install -e .
 ```
 
