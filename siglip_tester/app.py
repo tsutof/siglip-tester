@@ -95,9 +95,14 @@ def download_file(url):
 
 def on_url_text_input_changed():
     url = st.session_state[URL_WIDGET_KEY]
+    if url is None or url == "":
+        st.markdown("*Input image URL*")
+        st.session_state[SESS_KEY_IMG_FILE] = None
+        clear_results()
+        return
     file_path = download_file(url)
     if file_path is None:
-        st.markdown("*Could not download the image form {}*".format(url))
+        st.markdown("*Could not download the image from {}*".format(url))
     st.session_state[SESS_KEY_IMG_FILE] = file_path
     clear_results()
 
