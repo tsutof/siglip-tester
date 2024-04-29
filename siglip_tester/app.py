@@ -220,11 +220,19 @@ if image:
 
     # Button widget to clear the results
     st.button("Clear", on_click=clear_results)
-
-    # Data frame widget to hold the results
+    colcfg={
+        "Probability": st.column_config.ProgressColumn(
+            "Probability",
+            help="Probability [0.0, 1.0]",
+            format="%.3f",
+            min_value=0.0,
+            max_value=1.0,
+        ),
+    }
     df_editor = st.dataframe(
         st.session_state[SESS_KEY_DF],
-        use_container_width=True
+        use_container_width=True,
+        column_config=colcfg
     )
 else:
     # No image loaded
