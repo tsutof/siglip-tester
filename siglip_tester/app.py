@@ -115,6 +115,8 @@ def update(model, image):
     # Get the last input target text
     key=str(st.session_state[SESS_KEY_TGT_INPUT_KEY])
     target_text = st.session_state[key]
+    if target_text is None or target_text == "":
+        return
     text_list = [target_text]
     
     # Do inference by SigLIP
